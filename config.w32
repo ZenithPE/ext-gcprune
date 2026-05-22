@@ -1,0 +1,6 @@
+ARG_ENABLE("gcprune", "enable ext-gcprune adaptive GC traversal optimizer", "no");
+
+if (PHP_GCPRUNE != "no") {
+    EXTENSION("gcprune", "gcprune.c");
+    AC_DEFINE("HAVE_GCPRUNE", 1, "ext-gcprune enabled");
+}
