@@ -4,7 +4,7 @@
 extern zend_module_entry gcprune_module_entry;
 #define phpext_gcprune_ptr &gcprune_module_entry
 
-#define PHP_GCPRUNE_VERSION "0.0.1"
+#define PHP_GCPRUNE_VERSION "0.1.0"
 
 #ifdef PHP_WIN32
 # define PHP_GCPRUNE_API __declspec(dllexport)
@@ -21,7 +21,8 @@ extern zend_module_entry gcprune_module_entry;
 typedef enum {
     GCP_KIND_UNKNOWN   = 0,
     GCP_KIND_CRITICAL  = 1,
-    GCP_KIND_CONTAINER = 2
+    GCP_KIND_CONTAINER = 2,
+    GCP_KIND_LEAF      = 3
 } gcp_kind;
 
 typedef enum {
@@ -29,6 +30,11 @@ typedef enum {
     GCP_SHALLOW = 1,
     GCP_SAMPLED = 2
 } gcp_strategy;
+
+typedef struct _gcp_class_info {
+    gcp_kind kind;
+    int32_t  budget_override;
+} gcp_class_info;
 
 typedef struct _gcp_node {
     uint32_t  obj_handle;
@@ -54,17 +60,22 @@ typedef struct _gcp_stats {
     uint64_t forced_fulls;
     uint64_t nodes_visited_total;
     uint64_t nodes_pruned_total;
+    uint64_t nodes_evicted_total;
 } gcp_stats;
 
 ZEND_BEGIN_MODULE_GLOBALS(gcprune)
     zend_bool   enabled;
     zend_bool   paused;
+    zend_bool   testing_mode;
+    zend_bool   has_logger;
     uint32_t    run_id;
     uint32_t    last_seen_runs;
+    uint32_t    forced_offset;
     int32_t     node_budget;
     HashTable   nodes;
     HashTable   classmap;
     gcp_stats   stats;
+    zval        logger_callable;
 
     zend_bool   ini_enabled;
     zend_long   ini_node_budget;
@@ -74,6 +85,7 @@ ZEND_BEGIN_MODULE_GLOBALS(gcprune)
     zend_long   ini_depth_partial;
     zend_long   ini_sample_stride;
     zend_long   ini_cost_gate;
+    zend_long   ini_max_node_age;
     double      ini_stability_gate;
 ZEND_END_MODULE_GLOBALS(gcprune)
 
