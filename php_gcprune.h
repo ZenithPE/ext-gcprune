@@ -4,7 +4,7 @@
 extern zend_module_entry gcprune_module_entry;
 #define phpext_gcprune_ptr &gcprune_module_entry
 
-#define PHP_GCPRUNE_VERSION "0.1.0"
+#define PHP_GCPRUNE_VERSION "0.0.1"
 
 #ifdef PHP_WIN32
 # define PHP_GCPRUNE_API __declspec(dllexport)
