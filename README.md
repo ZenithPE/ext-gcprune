@@ -106,8 +106,6 @@ php                                   bench/synthetic.php 512 4 5 100
 php -d extension=./modules/gcprune.so bench/synthetic.php 512 4 5 100
 ```
 
-For real workloads use PocketMine's `/timings` together with `gc_status()` (`collector_time` on PHP 8.3+). Measure tick p99 / p999, not the mean - a game server cares about spikes, not averages.
-
 ## License
 
 MIT. See [`LICENSE`](LICENSE).
